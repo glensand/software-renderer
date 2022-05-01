@@ -10,7 +10,7 @@
 #include "model.h"
 #include "renderer.h"
 
-constexpr static unsigned Width { 1280 };
+constexpr static unsigned Width { 720 };
 constexpr static unsigned Height { 720 };
 constexpr static tga_image::color White{ 255, 255, 255, 0 };
 
@@ -19,6 +19,7 @@ int main(){
     model in_model("head.obj");
     renderer::wireframe(in_model, img, White);
 
+    img.flip_x();
     img.store("out.tga");
     return 0;
 }

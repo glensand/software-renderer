@@ -19,6 +19,8 @@ public:
 
     tga_image(unsigned width = 0, unsigned height = 0, unsigned bpp = 4);
 
+    void flip_x();
+    
     const color& get(unsigned x, unsigned y) const { return m_data[y * m_width + x]; }
     void set(unsigned x, unsigned y, const color& c) { m_data[y * m_width + x] = c; }
     std::pair<unsigned, unsigned> size() const { return { m_width, m_height }; }

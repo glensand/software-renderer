@@ -4,26 +4,27 @@
 #include <iostream>
 
 namespace {
+
 #pragma pack(push,1)
-struct header final {
-    char idlength;
-    char colormaptype;
-    char datatypecode;
-    short colormaporigin;
-    short colormaplength;
-    char colormapdepth;
-    short x_origin;
-    short y_origin;
-    short width;
-    short height;
-    char bitsperpixel;
-    char imagedescriptor;
-};
+    struct header final {
+        char idlength;
+        char colormaptype;
+        char datatypecode;
+        short colormaporigin;
+        short colormaplength;
+        char colormapdepth;
+        short x_origin;
+        short y_origin;
+        short width;
+        short height;
+        char bitsperpixel;
+        char imagedescriptor;
+    };
 #pragma pack(pop)
 
-const unsigned char developer_area_ref[4] = {0, 0, 0, 0};
-const unsigned char extension_area_ref[4] = {0, 0, 0, 0};
-const unsigned char footer[18] = {'T','R','U','E','V','I','S','I','O','N','-','X','F','I','L','E','.','\0'};
+    const unsigned char developer_area_ref[4] = {0, 0, 0, 0};
+    const unsigned char extension_area_ref[4] = {0, 0, 0, 0};
+    const unsigned char footer[18] = {'T','R','U','E','V','I','S','I','O','N','-','X','F','I','L','E','.','\0'};
 
 }
 
@@ -31,6 +32,7 @@ tga_image::tga_image(unsigned w, unsigned h, unsigned bpp)
     : m_height(h)
     , m_width(w)
     , m_bpp(bpp) {
+
     m_data.resize(w * h);
 }
 
@@ -61,4 +63,12 @@ void tga_image::store(const char* filename) const {
     out.write((char *)footer, sizeof(footer));
 
     out.close();
+}
+
+void tga_image::flip_x() {
+    for(unsigned i{ 0 }; i < m_height / 2; ++i){
+        for(unsigned j{ 0 }; j < m_width; ++j){
+            std::swap(m_data[i * m_width + j], m_data[m_width * (m_height - i) + j]);
+        }
+    }
 }
