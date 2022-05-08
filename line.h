@@ -51,8 +51,7 @@ namespace line {
     // x = f(y)
     // x = k * y + b
     struct equation final {
-        static equation build(const point& p0, const point& p1) {
-            
+        static equation build(const point& p0, const point& p1) {       
             auto k = p0.y != p1.y ? double(p0.x - p1.x) / (p0.y - p1.y) : 0;
             auto b = p1.x - p1.y * k;
             return { k, b };

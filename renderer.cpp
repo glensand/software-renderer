@@ -50,20 +50,11 @@ namespace renderer {
             
             auto&& t0_t2_equation = line::equation::build(t0, t2);
             auto&& t0_t1_equation = line::equation::build(t0, t1);
-
-            for(auto i{ t0.y }; i <= t1.y; ++i) {
-                auto&& x0 = t0_t2_equation.compute(i);
-                auto&& x1 = t0_t1_equation.compute(i);
-                if(x0 > x1) std::swap(x0, x1);
-                for(auto j { x0 }; j <= x1; ++j ){
-                    image.set(j, i, color);
-                }
-            }
-
             auto&& t1_t2_equation = line::equation::build(t1, t2);
-            for(auto i{ t1.y }; i <= t2.y; ++i) {
+
+            for(auto i{ t0.y }; i <= t2.y; ++i) {
                 auto&& x0 = t0_t2_equation.compute(i);
-                auto&& x1 = t1_t2_equation.compute(i);
+                auto&& x1 = i > t1.y ? t1_t2_equation.compute(i) : t0_t1_equation.compute(i);
                 if(x0 > x1) std::swap(x0, x1);
                 for(auto j { x0 }; j <= x1; ++j ){
                     image.set(j, i, color);
