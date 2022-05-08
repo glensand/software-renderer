@@ -14,6 +14,11 @@ constexpr static unsigned Width { 720 };
 constexpr static unsigned Height { 720 };
 constexpr static tga_image::color White{ 255, 255, 255, 0 };
 
+namespace renderer::detail {
+    void render_triangle2(point t0, point t1, point t2, 
+            tga_image &image, tga_image::color color);
+}
+
 int main(){
     tga_image img(Width, Height);
     model in_model("head.obj");

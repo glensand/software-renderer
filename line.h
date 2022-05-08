@@ -48,4 +48,22 @@ namespace line {
         line::brezenhaim({ x0, y0 }, { x1, y1 }, std::move(setter));
     }
 
+    // x = f(y)
+    // x = k * y + b
+    struct equation final {
+        static equation build(const point& p0, const point& p1) {
+            
+            auto k = p0.y != p1.y ? double(p0.x - p1.x) / (p0.y - p1.y) : 0;
+            auto b = p1.x - p1.y * k;
+            return { k, b };
+        }
+
+        int compute(int y) {
+            return k * y + b;
+        }
+
+        double k;
+        double b;
+    };
+
 }

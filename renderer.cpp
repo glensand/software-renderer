@@ -81,20 +81,30 @@ namespace renderer {
         void render_triangle2(point t0, point t1, point t2, 
             tga_image &image, tga_image::color color) {
             if (t0.y==t1.y && t0.y==t2.y) return; // i dont care about degenerate triangles
-            if (t0.y>t1.y) std::swap(t0, t1);
-            if (t0.y>t2.y) std::swap(t0, t2);
-            if (t1.y>t2.y) std::swap(t1, t2);
-            int total_height = t2.y-t0.y;
-            for (int i=0; i<total_height; i++) {
-                bool second_half = i>t1.y-t0.y || t1.y==t0.y;
-                int segment_height = second_half ? t2.y-t1.y : t1.y-t0.y;
-                float alpha = (float)i/total_height;
-                float beta  = (float)(i-(second_half ? t1.y-t0.y : 0))/segment_height; // be careful: with above conditions no division by zero here
-                auto A =               t0 + (t2-t0)*alpha;
-                auto B = second_half ? t1 + (t2-t1)*beta : t0 + (t1-t0)*beta;
-                if (A.x>B.x) std::swap(A, B);
-                for (int j=A.x; j<=B.x; j++) {
-                    image.set(j, t0.y+i, color); // attention, due to int casts t0.y+i != A.y
+            
+            if (t0.y > t1.y) std::swap(t0, t1);
+            if (t0.y > t2.y) std::swap(t0, t2);
+            if (t1.y > t2.y) std::swap(t1, t2);
+            
+            auto&& t0_t2_equation = line::equation::build(t0, t2);
+            auto&& t0_t1_equation = line::equation::build(t0, t1);
+
+            for(auto i{ t0.y }; i <= t1.y; ++i) {
+                auto&& x0 = t0_t2_equation.compute(i);
+                auto&& x1 = t0_t1_equation.compute(i);
+                if(x0 > x1) std::swap(x0, x1);
+                for(auto j { x0 }; j <= x1; ++j ){
+                    image.set(j, i, color);
+                }
+            }
+
+            auto&& t1_t2_equation = line::equation::build(t1, t2);
+            for(auto i{ t1.y }; i <= t2.y; ++i) {
+                auto&& x0 = t0_t2_equation.compute(i);
+                auto&& x1 = t1_t2_equation.compute(i);
+                if(x0 > x1) std::swap(x0, x1);
+                for(auto j { x0 }; j <= x1; ++j ){
+                    image.set(j, i, color);
                 }
             }
         }
