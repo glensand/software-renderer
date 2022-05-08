@@ -8,16 +8,16 @@
 
 #include "tga_image.h"
 #include "model.h"
-#include "renderer.h"
+#include "render/raster_renderer.h"
 
 constexpr static unsigned Width { 720 };
 constexpr static unsigned Height { 720 };
-constexpr static tga_image::color White{ 255, 255, 255, 0 };
 
 int main(){
     tga_image img(Width, Height);
     model in_model("head.obj");
-    renderer::rasterize(in_model, img);
+    auto* renderer = new raster_renderer;
+    renderer->draw(in_model, img);
 
     img.flip_x();
     img.store("out.tga");

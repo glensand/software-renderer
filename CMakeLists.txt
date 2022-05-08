@@ -8,10 +8,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 file(GLOB RENDER_HEADERS
         *.h
+        core/*.h
+        render/*.h
 )
 
 file(GLOB RENDER_SOURSES
         *.cpp
+        core/*.cpp
+        render/*.cpp
 )
 
 add_executable(${PROJECT_NAME} ${RENDER_HEADERS} ${RENDER_SOURSES})

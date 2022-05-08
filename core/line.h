@@ -10,7 +10,7 @@
 
 #include <vector>
 #include <cmath>
-#include "rmath.h"
+#include "core/rmath.h"
 
 namespace line {
 
@@ -39,7 +39,7 @@ namespace line {
     }
 
     template<typename TPointSetter>
-    void rasterize(const point& size, const vector3& p1, const vector3& p2, TPointSetter&& setter) {
+    void rasterize(const point& size, const vector3f& p1, const vector3f& p2, TPointSetter&& setter) {
         int x0 = (p1.x + 1.) * size.x / 2.;
         int y0 = (p1.y + 1.) * size.y / 2.;
         int x1 = (p2.x + 1.) * size.x / 2.;

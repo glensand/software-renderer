@@ -11,44 +11,38 @@
 #include <vector>
 #include <cmath>
 
-struct point final {
-    int x;
-    int y;
-
-    friend point operator+(const point& a, const point& b){
-        return { a.x + b.x, a.y + b.y };
-    }
-
-    friend point operator-(const point& a, const point& b){
-        return { a.x - b.x, a.y - b.y };
-    }
-
-    template<typename T>
-    friend point operator*(const point& a, T b){
-        return { a.x * (int)b, a.y * (int)b };
-    }
-};
-
- struct vector3 final {
-    double x, y, z;
+template<typename TValue>
+struct vector3 final {
+    TValue x{ 0 }, y{ 0 }, z{ 0 };
 
     friend vector3 cross(const vector3& a, const vector3& b) {
-        return { a.y*b.z-a.z*b.y, a.z*b.x-a.x*b.z, a.x*b.y-a.y*b.x };
+        return { a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x };
     }
 
     friend vector3 operator-(const vector3& a, const vector3& b) {
         return { a.x - b.x, a.y - b.y, a.z - b.z };
     }
 
-    friend double operator*(const vector3& a, const vector3& b) {
+    friend double dot(const vector3& a, const vector3& b) {
         return a.x * b.x + a.y * b.y + a.z * b.z;
+    }
+
+    friend vector3 operator*(const vector3& v, TValue a){
+        return { v.x * a, v.y * a, v.z * a };
     }
 
     void normalize() {
         auto&& self = *this;
-        auto length = std::sqrt(self * self);
+        auto length = std::sqrt(dot(self, self));
         x /= length;
         y /= length;
         z /= length;
     }
+};
+
+using vector3i = vector3<int>;
+using vector3f = vector3<double>;
+
+struct point final { 
+    int x, y;
 };

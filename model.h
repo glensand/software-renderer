@@ -10,11 +10,11 @@
 
 #include <vector>
 #include <tuple>
-#include "rmath.h"
+#include "core/rmath.h"
 
 class model final {
 public:
-    using verticies_t = std::vector<vector3>;
+    using verticies_t = std::vector<vector3f>;
     using triangles_t = std::vector<std::tuple<unsigned, unsigned, unsigned>>;
 
     model(const char* file);

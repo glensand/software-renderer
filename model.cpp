@@ -15,7 +15,7 @@ model::model(const char* file) {
         char trash;
         if (!line.compare(0, 2, "v ")) {
             iss >> trash;
-            vector3 v;
+            vector3f v;
             iss >> v.x >> v.y >> v.z; 
             m_verticies.push_back(v);
         } else if (!line.compare(0, 2, "f ")) {
