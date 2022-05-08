@@ -12,7 +12,10 @@
 
 class wireframe_renderer final : public renderer {
 public:
+    wireframe_renderer(tga_image& back_buffer);
     virtual ~wireframe_renderer() = default;
-    
-    virtual void draw(const model& in_model, tga_image& in_image) override;
+
+    virtual void draw(const model& in_model) override;
+private:
+    tga_image& m_back_buffer;
 };

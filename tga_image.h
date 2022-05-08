@@ -9,6 +9,7 @@
 #pragma once
 
 #include <vector>
+#include "core/rmath.h"
 
 class tga_image final {
 public:
@@ -23,7 +24,7 @@ public:
     
     const color& get(unsigned x, unsigned y) const { return m_data[y * m_width + x]; }
     void set(unsigned x, unsigned y, const color& c) { m_data[y * m_width + x] = c; }
-    std::pair<unsigned, unsigned> size() const { return { m_width, m_height }; }
+    point size() const { return { (int)m_width, (int)m_height }; }
 
     void load(const char* file);
     void store(const char* file) const;

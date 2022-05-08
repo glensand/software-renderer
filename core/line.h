@@ -50,14 +50,14 @@ namespace line {
 
     // x = f(y)
     // x = k * y + b
-    struct equation final {
-        static equation build(const point& p0, const point& p1) {       
+    struct equation2 final {
+        static equation2 build(const point& p0, const point& p1) {       
             auto k = p0.y != p1.y ? double(p0.x - p1.x) / (p0.y - p1.y) : 0;
             auto b = p1.x - p1.y * k;
             return { k, b };
         }
 
-        int compute(int y) {
+        int operator()(int y) {
             return k * y + b;
         }
 
@@ -65,4 +65,18 @@ namespace line {
         double b;
     };
 
+    struct equation3 final {
+        static equation3 build(const vector3i p0, const vector3i p1) {
+            return { 
+                equation2::build({ p0.x, p0.y }, { p1.x, p1.y }),
+                equation2::build({ p0.z, p0.y }, { p1.z, p1.y })
+            };
+        }
+
+        int x(int y) { return x_y(y); }
+        int z(int y) { return z_y(y); }
+
+        equation2 x_y;
+        equation2 z_y;
+    };
 }

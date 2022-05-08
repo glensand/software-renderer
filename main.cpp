@@ -16,8 +16,8 @@ constexpr static unsigned Height { 720 };
 int main(){
     tga_image img(Width, Height);
     model in_model("head.obj");
-    auto* renderer = new raster_renderer;
-    renderer->draw(in_model, img);
+    auto* renderer = new raster_renderer(img);
+    renderer->draw(in_model);
 
     img.flip_x();
     img.store("out.tga");

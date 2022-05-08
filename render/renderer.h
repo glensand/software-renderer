@@ -14,5 +14,5 @@ class model;
 class renderer {
 public:
     virtual ~renderer() = default;
-    virtual void draw(const model& in_model, tga_image& in_image) = 0;
+    virtual void draw(const model& in_model) = 0;
 };

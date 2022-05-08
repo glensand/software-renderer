@@ -11,16 +11,22 @@
 #include "renderer.h"
 #include "tga_image.h"
 
+#include <vector>
+
 struct point;
 
 class raster_renderer final : public renderer {
 public:
+    raster_renderer(tga_image& back_buffer);
     virtual ~raster_renderer() = default;
 
-    virtual void draw(const model& in_model, tga_image& in_image) override;
-
+    virtual void draw(const model& in_model) override;
 private:
     tga_image::color color(double intencity);
-    void render_triangle(point t0, point t1, point t2, 
-            tga_image &image, tga_image::color color);
+    void render_triangle(vector3i t0, vector3i t1, vector3i t2, tga_image::color color);
+    vector3i to_screen_space(const vector3f& p);
+    bool depth_test(vector3i&& depth);
+
+    tga_image& m_back_buffer;
+    std::vector<int> m_z_buffer;
 };
