@@ -10,11 +10,7 @@
 
 #include <vector>
 #include <cmath>
-
-struct point final {
-    int x;
-    int y;
-};
+#include "rmath.h"
 
 namespace line {
 
@@ -40,6 +36,16 @@ namespace line {
                 setter(x, y);
             }
         }
+    }
+
+    template<typename TPointSetter>
+    void rasterize(const point& size, const vector3& p1, const vector3& p2, TPointSetter&& setter) {
+        int x0 = (p1.x + 1.) * size.x / 2.;
+        int y0 = (p1.y + 1.) * size.y / 2.;
+        int x1 = (p2.x + 1.) * size.x / 2.;
+        int y1 = (p2.y + 1.) * size.y / 2.;
+
+        line::brezenhaim({ x0, y0 }, { x1, y1 }, std::move(setter));
     }
 
 }

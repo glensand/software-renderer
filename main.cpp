@@ -17,7 +17,7 @@ constexpr static tga_image::color White{ 255, 255, 255, 0 };
 int main(){
     tga_image img(Width, Height);
     model in_model("head.obj");
-    renderer::wireframe(in_model, img, White);
+    renderer::rasterize2(in_model, img);
 
     img.flip_x();
     img.store("out.tga");

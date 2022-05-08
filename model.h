@@ -10,10 +10,7 @@
 
 #include <vector>
 #include <tuple>
-
-struct vector3 final {
-    double x, y, z;
-};
+#include "rmath.h"
 
 class model final {
 public:
