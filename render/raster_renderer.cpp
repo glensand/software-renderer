@@ -66,7 +66,7 @@ vector3i raster_renderer::to_screen_space(const vector3f& p){
     return { 
         int((p.x + 1.) * width / 2.), 
         int((p.y + 1.) * height / 2.), 
-        int(p.z * width)
+        int((p.z + 1.) * 255. / 2.)
     };
 }
 
