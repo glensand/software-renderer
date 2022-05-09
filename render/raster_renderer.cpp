@@ -29,7 +29,7 @@ tga_image::color raster_renderer::color(double intencity) {
         (unsigned char)(255.0 * intencity), 
         (unsigned char)(255.0 * intencity), 
         (unsigned char)(255.0 * intencity), 
-        0
+        255
     };
 }
 

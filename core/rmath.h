@@ -13,7 +13,21 @@
 
 template<typename TValue>
 struct vector3 final {
-    TValue x{ 0 }, y{ 0 }, z{ 0 };
+    TValue x, y, z;
+
+    vector3(TValue in_x = 0, TValue in_y = 0, TValue in_z = 0)
+        : x(in_x)
+        , y(in_y)
+        , z(in_z) {
+
+    }
+
+    template<typename TRValue>
+    vector3(const vector3<TRValue>& rhs) {
+        x = TValue(rhs.x);
+        y = TValue(rhs.y);
+        z = TValue(rhs.z);
+    }
 
     friend vector3 cross(const vector3& a, const vector3& b) {
         return { a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x };
@@ -38,7 +52,7 @@ struct vector3 final {
 
     void normalize() {
         auto&& self = *this;
-        auto length = std::sqrt(dot(self, self));
+        auto length = std::sqrt((double)dot(self, self));
         x /= length;
         y /= length;
         z /= length;

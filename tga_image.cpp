@@ -68,7 +68,7 @@ void tga_image::store(const char* filename) const {
 void tga_image::flip_x() {
     for(unsigned i{ 0 }; i < m_height / 2; ++i){
         for(unsigned j{ 0 }; j < m_width; ++j){
-            std::swap(m_data[i * m_width + j], m_data[m_width * (m_height - i) + j]);
+            std::swap(m_data[i * m_width + j], m_data[m_width * (m_height - i - 1) + j]);
         }
     }
 }
