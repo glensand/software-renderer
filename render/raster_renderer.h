@@ -21,9 +21,9 @@ public:
     virtual ~raster_renderer() = default;
 
     virtual void draw(const model& in_model) override;
+private:
 
     void render_triangle(vector3i t0, vector3i t1, vector3i t2, tga_image::color color);
-private:
     tga_image::color color(double intencity);
     
     vector3i to_screen_space(const vector3f& p);
