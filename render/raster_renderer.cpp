@@ -6,7 +6,7 @@
 raster_renderer::raster_renderer(tga_image& back_buffer)
     : m_back_buffer(back_buffer) {
     auto&& size = back_buffer.size();
-    m_z_buffer.resize(size.x * size.y, std::numeric_limits<int>::max());
+    m_z_buffer.resize(size.x * size.y, std::numeric_limits<double>::min());
 }
 
 void raster_renderer::draw(const model& in_model) {
@@ -45,15 +45,20 @@ void raster_renderer::render_triangle(vector3i t0, vector3i t1, vector3i t2, tga
     auto&& t1_t2 = t2 - t1;
 
     auto&& height = t2.y - t0.y;
+    if(height == 0) height = 1;
     for(auto i{ t0.y }; i <= t2.y; ++i) {
         auto&& p0 = t0 + t0_t2 * (double(i - t0.y) / height);
-        auto&& p1 = i <= t1.y ? t0 + t0_t1 * (double(i - t0.y) / (t1.y - t0.y)) :
-            t1 + t1_t2 * (double(i - t1.y) / (t2.y - t1.y));
+        auto&& segment_height = i <= t1.y ? t1.y - t0.y : t2.y - t1.y;
+        if(segment_height == 0) segment_height = 1;
+        auto&& p1 = i <= t1.y ? t0 + t0_t1 * (double(i - t0.y) / double(segment_height)) :
+            t1 + t1_t2 * (double(i - t1.y) / double(segment_height));
+
         if(p0.x > p1.x) std::swap(p0, p1);
         auto&& p0_p1 = p1 - p0;
         auto&& length = p1.x - p0.x;
+        if(length == 0) length = 1;
         for(auto j{ p0.x }; j <= p1.x; ++j) {
-            auto&& cur_p = p0 + p0_p1 * (double(j - p0.x) / length);
+            auto&& cur_p = p0 + p0_p1 * (double(j - p0.x) / (double)length);
             if(depth_test({j, i, cur_p.z})){
                 m_back_buffer.set(j, i, color);
             }
@@ -66,14 +71,14 @@ vector3i raster_renderer::to_screen_space(const vector3f& p){
     return { 
         int((p.x + 1.) * width / 2.), 
         int((p.y + 1.) * height / 2.), 
-        int((p.z + 1.) * 255. / 2.)
+        int((p.z + 1.) * width / 2.)
     };
 }
 
 bool raster_renderer::depth_test(const vector3i& point) {
     auto&& pixel = m_z_buffer[point.y * m_back_buffer.size().x + point.x];
     bool result = false;
-    if(point.z <= pixel) {
+    if(point.z > pixel) {
         pixel = point.z;
         result = true;
     }

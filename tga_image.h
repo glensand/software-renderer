@@ -15,7 +15,7 @@ class tga_image final {
 public:
 
     struct color final {
-	    unsigned char b{ 255 }, g{ 255 }, r{ 255 }, a{ 255 };
+	    unsigned char b{ 0 }, g{ 0 }, r{ 0 }, a{ 255 };
     };
 
     tga_image(unsigned width = 0, unsigned height = 0, unsigned bpp = 4);
