@@ -12,6 +12,7 @@
 
 constexpr static unsigned Width { 720 };
 constexpr static unsigned Height { 720 };
+constexpr tga_image::color White{ 255, 255, 255, 0 };
 
 int main(){
     tga_image img(Width, Height);

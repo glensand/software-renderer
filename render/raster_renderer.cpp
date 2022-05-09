@@ -40,25 +40,23 @@ void raster_renderer::render_triangle(vector3i t0, vector3i t1, vector3i t2, tga
     if (t0.y > t2.y) std::swap(t0, t2);
     if (t1.y > t2.y) std::swap(t1, t2);
     
-    auto&& t0_t2_equation = line::equation3::build(t0, t2);
-    auto&& t0_t1_equation = line::equation3::build(t0, t1);
-    auto&& t1_t2_equation = line::equation3::build(t1, t2);
+    auto&& t0_t2 = t2 - t0;
+    auto&& t0_t1 = t1 - t0;
+    auto&& t1_t2 = t2 - t1;
 
+    auto&& height = t2.y - t0.y;
     for(auto i{ t0.y }; i <= t2.y; ++i) {
-        auto&& x0 = t0_t2_equation.x(i);
-        auto&& equation = i > t1.y ? t1_t2_equation : t0_t1_equation;
-        auto&& x1 = equation.x(i);
-
-        if(x0 > x1) std::swap(x0, x1);
-
-        // for z buffer
-        auto&& z0 = t0_t2_equation.z(i);
-        auto&& z1 = equation.z(i);
-        auto&& z_x = line::equation2::build({ z0, x0 }, { z1, x1 });
-
-        for(auto j { x0 }; j <= x1; ++j ) {
-            if(depth_test({j, i, z_x(j)}))
+        auto&& p0 = t0 + t0_t2 * (double(i - t0.y) / height);
+        auto&& p1 = i <= t1.y ? t0 + t0_t1 * (double(i - t0.y) / (t1.y - t0.y)) :
+            t1 + t1_t2 * (double(i - t1.y) / (t2.y - t1.y));
+        if(p0.x > p1.x) std::swap(p0, p1);
+        auto&& p0_p1 = p1 - p0;
+        auto&& length = p1.x - p0.x;
+        for(auto j{ p0.x }; j <= p1.x; ++j) {
+            auto&& cur_p = p0 + p0_p1 * (double(j - p0.x) / length);
+            if(depth_test({j, i, cur_p.z})){
                 m_back_buffer.set(j, i, color);
+            }
         }
     }
 }
@@ -68,19 +66,16 @@ vector3i raster_renderer::to_screen_space(const vector3f& p){
     return { 
         int((p.x + 1.) * width / 2.), 
         int((p.y + 1.) * height / 2.), 
-        int((p.z + 1.) * 1000000)
+        int(p.z * width)
     };
 }
 
-bool raster_renderer::depth_test(vector3i&& point) {
+bool raster_renderer::depth_test(const vector3i& point) {
     auto&& pixel = m_z_buffer[point.y * m_back_buffer.size().x + point.x];
     bool result = false;
     if(point.z <= pixel) {
         pixel = point.z;
         result = true;
-    }
-    else{
-        int stub = 0;
     }
     return result;
 }

@@ -23,12 +23,17 @@ struct vector3 final {
         return { a.x - b.x, a.y - b.y, a.z - b.z };
     }
 
+    friend vector3 operator+(const vector3& a, const vector3& b) {
+        return { a.x + b.x, a.y + b.y, a.z + b.z };
+    }
+
     friend double dot(const vector3& a, const vector3& b) {
         return a.x * b.x + a.y * b.y + a.z * b.z;
     }
 
-    friend vector3 operator*(const vector3& v, TValue a){
-        return { v.x * a, v.y * a, v.z * a };
+    template<typename TMult>
+    friend vector3 operator*(const vector3& v, TMult a){
+        return { TValue(v.x * a), TValue(v.y * a), TValue(v.z * a) };
     }
 
     void normalize() {
