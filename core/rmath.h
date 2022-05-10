@@ -62,6 +62,10 @@ struct vector3 final {
 using vector3i = vector3<int>;
 using vector3f = vector3<double>;
 
-struct point final { 
-    int x, y;
+template<typename TValue>
+struct vector2 final { 
+    TValue x, y;
 };
+
+using point = vector2<int>;
+using vector2f = vector2<double>;

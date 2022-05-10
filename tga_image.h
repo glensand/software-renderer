@@ -15,24 +15,43 @@ class tga_image final {
 public:
 
     struct color final {
-	    unsigned char b{ 0 }, g{ 0 }, r{ 0 }, a{ 255 };
+	    uint8_t bgra[4];
+
+        color(uint8_t* in_bgra) {
+            for(auto i{ 0 }; i < 4; ++i)
+                bgra[i] = in_bgra[i];
+        }
+
+        constexpr color() {
+            bgra[0] = bgra[1] = bgra[2] = 0;
+            bgra[3] = 255;
+        }
+
+        constexpr color(uint8_t b, uint8_t g, uint8_t r, uint8_t a){
+            bgra[0] = b;
+            bgra[1] = g;
+            bgra[2] = r;
+            bgra[3] = a;
+        }
     };
 
     tga_image(unsigned width = 0, unsigned height = 0, unsigned bpp = 4);
 
     void flip_x();
     
-    const color& get(unsigned x, unsigned y) const { return m_data[y * m_width + x]; }
-    void set(unsigned x, unsigned y, const color& c) { m_data[y * m_width + x] = c; }
+    color& get(unsigned x, unsigned y) const { return *(color*)(m_data.data() + (y * m_width + x) * m_bpp) ; }
+    void set(unsigned x, unsigned y, const color& c) { get(x, y) = c; }
     point size() const { return { (int)m_width, (int)m_height }; }
 
-    void load(const char* file);
+    bool load(const char* file);
     void store(const char* file) const;
 private:
+
+    bool load_rle(std::istream& in);
 
     unsigned m_width;
     unsigned m_height;
     unsigned m_bpp;
 
-    std::vector<color> m_data;
+    std::vector<uint8_t> m_data;
 };

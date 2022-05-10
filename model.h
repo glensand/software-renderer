@@ -10,19 +10,45 @@
 
 #include <vector>
 #include <tuple>
+#include <string_view>
+#include "tga_image.h"
 #include "core/rmath.h"
 
 class model final {
 public:
+
+    struct triangle final {
+        struct indicies_t final {
+            unsigned vert{ 0 }, uv{ 0 }, normal { 0 };
+        } indicies[3];
+
+        triangle(indicies_t* in_indicies) {
+            for(auto i{ 0 }; i < 3; ++i)
+                indicies[i] = in_indicies[i];
+        }
+
+        triangle(){}
+    };
+
     using verticies_t = std::vector<vector3f>;
-    using triangles_t = std::vector<std::tuple<unsigned, unsigned, unsigned>>;
+
+    // vector3i: vert/uv/normal
+    using triangles_t = std::vector<triangle>;
 
     model(const char* file);
     
     const verticies_t& get_vert() const { return m_verticies; }
     const triangles_t& get_trian() const { return m_triangles; }
 
+    tga_image::color diffuse(const point& uv) const;
+    void load_texture(std::string_view texture_name);
+
+    vector2f uv(unsigned triangle, unsigned vert);
 private:
     verticies_t m_verticies;
+    verticies_t m_normals;
     triangles_t m_triangles;
+    
+    std::vector<vector2f> m_uvs;
+    tga_image m_diffuse_texture;
 };

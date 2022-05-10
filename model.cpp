@@ -18,17 +18,45 @@ model::model(const char* file) {
             vector3f v;
             iss >> v.x >> v.y >> v.z; 
             m_verticies.push_back(v);
+        } else if (!line.compare(0, 3, "vn ")) {
+            iss >> trash >> trash;
+            vector3f n;
+            iss >> n.x >> n.y >> n.z; 
+            m_normals.push_back(n);
+        } else if (!line.compare(0, 3, "vt ")) {
+            iss >> trash >> trash;
+            vector2f uv;
+            iss >> uv.x >> uv.y; 
+            m_uvs.push_back(uv);
         } else if (!line.compare(0, 2, "f ")) {
-            std::vector<int> f;
-            int itrash, idx;
+            auto&& triangle = m_triangles.emplace_back();
+            auto&& indicies = triangle.indicies;
+            unsigned vert_index = 0;
             iss >> trash;
-            while (iss >> idx >> trash >> itrash >> trash >> itrash) {
-                idx--; // in wavefront obj all indices start at 1, not zero
-                f.push_back(idx);
-            }
-            if(f.size() == 3) {
-                m_triangles.emplace_back(f[0], f[1], f[2]);
+            while (iss >> indicies[vert_index].normal >> trash 
+                    >> indicies[vert_index].uv >> trash >> indicies[vert_index].vert)  {
+                indicies[vert_index].uv--; 
+                indicies[vert_index].normal--;
+                indicies[vert_index].vert--;
+
+                ++vert_index;
             }
         }
     }
+}
+
+tga_image::color model::diffuse(const point& uv) const{
+    return m_diffuse_texture.get(uv.x, uv.y);
+}
+
+void model::load_texture(std::string_view texture_name){
+    m_diffuse_texture.load(texture_name.data());
+}
+
+vector2f model::uv(unsigned triangle_index, unsigned vert_index){
+    auto&& triangle = m_triangles[triangle_index];
+    auto&& uv_index = triangle.indicies[vert_index].uv;
+
+    auto&& size = m_diffuse_texture.size();
+    return { m_uvs[uv_index].x * size.x, m_uvs[uv_index].y * size.y };
 }

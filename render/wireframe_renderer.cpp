@@ -35,10 +35,11 @@ wireframe_renderer::wireframe_renderer(tga_image& back_buffer)
 void wireframe_renderer::draw(const model& in_model) {
     auto&& verticies = in_model.get_vert();
     auto&& triangles = in_model.get_trian();
-    for(auto&& [p0, p1, p2] : triangles) {
+    for(auto&& triangle : triangles) {
+        auto&& indeces = triangle.indicies;
         line_renderer(m_back_buffer, White)
-            .draw(verticies[p0], verticies[p1])
-            .draw(verticies[p1], verticies[p2])
-            .draw(verticies[p2], verticies[p0]);
+            .draw(verticies[indeces[0].vert], verticies[indeces[1].vert])
+            .draw(verticies[indeces[1].vert], verticies[indeces[2].vert])
+            .draw(verticies[indeces[2].vert], verticies[indeces[0].vert]);
     }
 }
