@@ -65,6 +65,23 @@ using vector3f = vector3<double>;
 template<typename TValue>
 struct vector2 final { 
     TValue x, y;
+
+    friend vector2 operator-(const vector2& a, const vector2& b) {
+        return { a.x - b.x, a.y - b.y};
+    }
+
+    friend vector2 operator+(const vector2& a, const vector2& b) {
+        return { a.x + b.x, a.y + b.y};
+    }
+
+    template<typename TMult>
+    friend vector2 operator*(const vector2& a, TMult m) {
+        return { TValue(a.x * m), TValue(a.y * m) };
+    }
+
+    friend double dot(const vector2& a, const vector2& b) {
+        return a.x * b.x + a.y * b.y;
+    }
 };
 
 using point = vector2<int>;

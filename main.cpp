@@ -16,7 +16,7 @@ constexpr tga_image::color White{ 255, 255, 255, 0 };
 
 int main(){
     tga_image img(Width, Height);
-    model in_model("head.obj");
+    model in_model("head.obj", "diffuse.tga");
     auto* renderer = new raster_renderer(img);
     renderer->draw(in_model);
 

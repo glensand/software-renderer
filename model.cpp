@@ -3,8 +3,11 @@
 #include <fstream>
 #include <sstream>
 
-model::model(const char* file) { 
-    std::ifstream in(file, std::ios::binary);
+model::model(const char* model_file, const char* diffuse_file) { 
+    m_diffuse_texture.load(diffuse_file);
+    m_diffuse_texture.flip_x();
+    
+    std::ifstream in(model_file, std::ios::binary);
 
     if(!in.is_open()) return;
     

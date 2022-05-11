@@ -48,23 +48,42 @@ void raster_renderer::render_triangle(model::triangle t, double intencity, const
     auto&& t0_t1 = t1 - t0;
     auto&& t1_t2 = t2 - t1;
 
+    auto&& uvs = model.get_uvs();
+    auto&& uv0 = uvs[t.indicies[0].uv];
+    auto&& uv1 = uvs[t.indicies[1].uv];
+    auto&& uv2 = uvs[t.indicies[2].uv];
+
+    auto&& uv0_uv2 = uv2 - uv0;
+    auto&& uv0_uv1 = uv1 - uv0;
+    auto&& uv1_uv2 = uv2 - uv1;
+
     auto&& height = t2.y - t0.y;
     if(height == 0) height = 1;
     for(auto i{ t0.y }; i <= t2.y; ++i) {
-        auto&& p0 = t0 + t0_t2 * (double(i - t0.y) / height);
+        auto&& alpha = (double(i - t0.y) / height);
+        auto&& p0 = t0 + t0_t2 * alpha;
         auto&& segment_height = i <= t1.y ? t1.y - t0.y : t2.y - t1.y;
         if(segment_height == 0) segment_height = 1;
-        auto&& p1 = i <= t1.y ? t0 + t0_t1 * (double(i - t0.y) / double(segment_height)) :
-            t1 + t1_t2 * (double(i - t1.y) / double(segment_height));
+        auto&& beta = i <= t1.y ? (double(i - t0.y) / double(segment_height)) : (double(i - t1.y) / double(segment_height));
+        auto&& p1 = i <= t1.y ? t0 + t0_t1 * beta : t1 + t1_t2 * beta;
 
-        if(p0.x > p1.x) std::swap(p0, p1);
+        auto&& uv_p0 = uv0 + (uv0_uv2) * alpha;
+        auto&& uv_p1 = i > t1.y ? uv1 + (uv1_uv2) * beta : uv0 + (uv0_uv1) * beta;
+
+        if(p0.x > p1.x) {
+            std::swap(p0, p1);
+            std::swap(uv_p0, uv_p1);
+        }
         auto&& p0_p1 = p1 - p0;
         auto&& length = p1.x - p0.x;
         if(length == 0) length = 1;
         for(auto j{ p0.x }; j <= p1.x; ++j) {
-            auto&& cur_p = p0 + p0_p1 * (double(j - p0.x) / (double)length);
+            auto&& phi = (double(j - p0.x) / (double)length);
+            auto&& cur_p = p0 + p0_p1 * phi;
+            auto&& cur_uv = uv_p0 + (uv_p1 - uv_p0) * phi;
             if(depth_test({j, i, cur_p.z})){
-                m_back_buffer.set(j, i, color(intencity));
+                auto&& color = model.diffuse({ int(cur_p.x), int(cur_p.y) });
+                m_back_buffer.set(j, i, color * intencity);
             }
         }
     }

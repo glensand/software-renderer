@@ -35,11 +35,12 @@ public:
     // vector3i: vert/uv/normal
     using triangles_t = std::vector<triangle>;
 
-    model(const char* file);
+    model(const char* model_file, const char* diffuse_file);
     
     const verticies_t& get_vert() const { return m_verticies; }
     const triangles_t& get_trian() const { return m_triangles; }
-
+    const std::vector<vector2f>& get_uvs() const { return m_uvs; }
+    
     tga_image::color diffuse(const point& uv) const;
     void load_texture(std::string_view texture_name);
 

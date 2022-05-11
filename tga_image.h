@@ -33,6 +33,14 @@ public:
             bgra[2] = r;
             bgra[3] = a;
         }
+
+        template<typename TMult>
+        friend color operator*(const color& c, TMult m) {
+            auto res = c;
+            for(auto i{ 0 }; i < 3; ++i)
+                res.bgra[i] *= m;
+            return res;
+        }
     };
 
     tga_image(unsigned width = 0, unsigned height = 0, unsigned bpp = 4);

@@ -10,10 +10,10 @@
 
 #include "renderer.h"
 #include "tga_image.h"
+#include "core/rmath.h"
+#include "model.h"
 
 #include <vector>
-
-struct point;
 
 class raster_renderer final : public renderer {
 public:
@@ -23,7 +23,9 @@ public:
     virtual void draw(const model& in_model) override;
 private:
 
-    void render_triangle(vector3i t0, vector3i t1, vector3i t2, tga_image::color color);
+    void render_triangle(model::triangle t, double intencity, const model& model);
+    static void sort_verticies(model::triangle& t, const model& model);
+    static bool is_collapsed(const model::triangle& t, const model& model); 
     tga_image::color color(double intencity);
     
     vector3i to_screen_space(const vector3f& p);
